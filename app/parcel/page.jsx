@@ -1,38 +1,99 @@
 "use client"
 
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@/components/Button';
 import Container from '@/components/Container';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import { IoReloadOutline } from "react-icons/io5";
 
 const page = () => {
+    const [cities, setCities] = useState([]);
+    const [step, setStep] = useState(1);
+    const [loading, setLoading] = useState(false);
+
+    const [formValues, setFormValues] = useState({
+        cities: ""
+    });
     const router = useRouter();
     const handleClick = () => {
         router.push("/")
     }
 
-    
+    const handleChange = (event) => {
+        setFormValues({ ...formValues, [event.target.name]: event.target.value })
+    }
+
+    const apiKey = ``;
     const options = {
         headers: {
             accept: 'application/json',
-            // Authorization: `Bearer ${apiKey}`
+            Authorization: `Bearer ${apiKey}`
         }
     };
+
     const getCities = async () => {
         try {
+            setLoading(true);
+
             await axios.get(`https://sandbox.myt40.com/api/v2/retailer/cities`, options)
-            .then(response => console.log(response))
-            .catch(err => console.error(err));
+                .then(response => {
+                    setCities(response);
+                    console.log(response);
+                    setLoading(false);               
+                })
+                .catch(err => {
+                    console.log("error: ", err.message)
+                    toast.error("error loading cities");
+                    setLoading(false);
+                    throw new Error(err.message);
+                })
         } catch (error) {
+            toast.error("error loading cities");
             console.log("error", error);
         }
+    }
+
+    const getLocations = async () => {
+        try {
+            setLoading(true);
+
+            await axios.get(`https://sandbox.myt40.com/api/v2/retailer/locations?city_id=${formValues.cities}`, options)
+                .then(response => {
+                    setCities(response);
+                    console.log(response);
+                    setLoading(false);               
+                })
+                .catch(err => {
+                    console.log("error: ", err.message)
+                    toast.error("error loading cities");
+                    setLoading(false);
+                    throw new Error(err.message);
+                })
+        } catch (error) {
+            toast.error("error loading cities");
+            console.log("error", error);
+        }
+    }
+
+    console.log("step: ", cities);
+
+    const handleCitySubmit = (event) => {
+        event.preventDefault();
+        console.log(formValues);
+        setStep(prev => prev + 1)
+    }
+
+    const handlePrevBtn = () => {
+        setStep(prev => prev + 1)
     }
 
     useEffect(() => {
         getCities();
     }, [])
+
     return (
         <main className=' h-screen'>
             <nav className='py-6 border-b border-[#ECEEEB]'>
@@ -49,84 +110,108 @@ const page = () => {
                 </Container>
             </nav>
 
-            <Container className='mt-20'>
-                <div>
-                    <form className='w-[620px] mx-auto space-y-6'>
-                        <div>
-                            <h2 className="font-semibold text-xl text-primary">Intercity Parcel Express</h2>
-                            <p className='text-sm pt-1'>
-                                ParcelExpress provides a seamless experience for
-                                sending parcels of various sizes and types to
-                                destinations across different cities.
-                            </p>
-                        </div>
-                        <div>
-                            <label htmlFor="cities" className="block text-sm font-medium leading-6 text-gray-900">
-                                Cities
-                            </label>
-                            <div>
-                                <select
-                                    id="cities"
-                                    name="cities"
-                                    autoComplete="cities-name"
-                                    className="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+            <Container className='mt-20 pb-20'>
+                <form className='w-[620px] mx-auto'>
+                    <div>
+                        <h2 className="font-semibold text-xl text-primary">Intercity Parcel Express</h2>
+                        <p className='text-sm pt-1'>
+                            ParcelExpress provides a seamless experience for
+                            sending parcels of various sizes and types to
+                            destinations across different cities.
+                        </p>
+                    </div>
+
+                    {
+                        step === 1 && !loading ?
+                            <div className='space-y-6'>
+                                <div>
+                                    <label htmlFor="cities" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Cities
+                                    </label>
+                                    <div>
+                                        <select
+                                            id="cities"
+                                            name="cities"
+                                            onChange={handleChange}
+                                            autoComplete="cities-name"
+                                            className="block w-full rounded-md border-0 py-2 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        >
+                                            <option value="">
+                                                -- Please choose an option --
+                                            </option>
+                                            {
+                                                cities?.data?.data?.map(city => (
+                                                    <option key={city.id} value={city.id}>
+                                                        {city.name}
+                                                    </option>
+                                                ))
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <Button
+                                    type="submit"
+                                    onClick={handleCitySubmit}
+                                    className="bg-primary py-3 w-full text-white"
                                 >
-                                    <option>United States</option>
-                                    <option>Canada</option>
-                                    <option>Mexico</option>
-                                </select>
+                                    Choose city
+                                </Button>
+                            </div>
+                            : loading && (
+                                <div className='flex justify-center items-center'>
+                                    <IoReloadOutline className='mt-10 text-2xl animate-spin' />
+                                </div>
+                            )
+                    }
+
+                    {
+                        step === 2 &&
+                        <div className='space-y-6'>
+                            <div>
+                                <label htmlFor="locations" className="block text-sm font-medium leading-6 text-gray-900">
+                                    Choose locations
+                                </label>
+                                <div>
+                                    <select
+                                        id="locations"
+                                        name="locations"
+                                        onChange={handleChange}
+                                        autoComplete="locations-name"
+                                        className="block w-full rounded-md border-0 py-2 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                    >
+                                        <option value="">
+                                            -- Please choose an option --
+                                        </option>
+                                        {/* {
+                                            cities?.data?.data?.map(city => (
+                                                <option key={city.id} value={city.id}>
+                                                    {city.name}
+                                                </option>
+                                            ))
+                                        } */}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className='grid grid-cols-2 gap-x-2'>
+                                <Button
+                                    type="submit"
+                                    className="bg-primary py-3 w-full text-white"
+                                >
+                                    Track
+                                </Button>
+
+                                <Button
+                                    type="submit"
+                                    className="bg-primary py-3 w-full text-white"
+                                >
+                                    Back
+                                </Button>
                             </div>
                         </div>
-
-                        <div>
-                            <label className='block font-medium'>
-                                Business name
-                            </label>
-                            <input type="text"
-                                name="businessname"
-                                placeholder=''
-
-                                className='border text-sm border-[#e0e0e0] w-full rounded-[10px] text-[#111827] py-[10px] pl-[14px] pr-[10px]'
-                            />
-
-                        </div>
-
-                        <div>
-                            <label className='block font-medium'>
-                                Phone number
-                            </label>
-                            <input type="text"
-                                name="phone"
-                                placeholder=''
-
-                                className='border text-sm border-[#e0e0e0] w-full rounded-[10px] text-[#111827] py-[10px] pl-[14px] pr-[10px]'
-                            />
-
-                        </div>
-
-                        <div>
-                            <label className='block font-medium'>
-                                Country
-                            </label>
-                            <input type="text"
-                                name="country"
-                                placeholder=''
-                                className='border text-sm border-[#e0e0e0] w-full rounded-[10px] text-[#111827] py-[10px] pl-[14px] pr-[10px]'
-                            />
-
-                        </div>
-
-                        <Button
-                            type="submit"
-
-                        // className=" w-full bg-primary text-white rounded-[10px]"                    
-                        >
-                            Track
-                        </Button>
-
-
-                    </form>
-                </div>
+                    }
+                </form>
             </Container>
 
         </main>

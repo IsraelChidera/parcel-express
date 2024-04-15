@@ -292,7 +292,7 @@ const page = () => {
                                 <Button
                                     onClick={handleCitySubmit}
                                     type="submit"
-                                    className="bg-primary md:text-base py-3 md:py-6 w-full text-white"
+                                    className="bg-primary md:text-base py-3 md:py-3 w-full text-white"
                                 >
                                     Go to parcel type
                                 </Button>
@@ -300,7 +300,7 @@ const page = () => {
                                 <Button
                                     onClick={handlePrevBtn}
                                     type="submit"
-                                    className="bg-primary md:text-base py-3 md:py-6 w-full text-white"
+                                    className="bg-primary md:text-base py-3 md:py-3 w-full text-white"
                                 >
                                     Back
                                 </Button>
@@ -341,7 +341,7 @@ const page = () => {
                                 <Button
                                     onClick={handleCitySubmit}
                                     type="submit"
-                                    className="bg-primary py-3 md:py-6 w-full text-white"
+                                    className="bg-primary py-3 md:py-3 w-full text-white"
                                 >
                                     Go to parcel size
                                 </Button>
@@ -349,7 +349,7 @@ const page = () => {
                                 <Button
                                     onClick={handlePrevBtn}
                                     type="submit"
-                                    className="bg-primary py-3 md:py-6 w-full text-white"
+                                    className="bg-primary py-3 md:py-3 w-full text-white"
                                 >
                                     Back
                                 </Button>
@@ -390,7 +390,7 @@ const page = () => {
                                 <Button
                                     onClick={handleCitySubmit}
                                     type="submit"
-                                    className="bg-primary py-3 md:py-6 w-full text-white"
+                                    className="bg-primary py-3 md:py-3 w-full text-white"
                                 >
                                     View parcel routes
                                 </Button>
@@ -398,7 +398,7 @@ const page = () => {
                                 <Button
                                     onClick={handlePrevBtn}
                                     type="submit"
-                                    className="bg-primary py-3 md:py-6 w-full text-white"
+                                    className="bg-primary py-3 md:py-3 w-full text-white"
                                 >
                                     Back
                                 </Button>

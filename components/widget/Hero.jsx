@@ -14,7 +14,7 @@ const Hero = () => {
                     <div>
                         <div>
                             <h1 className="text-[#204945] text-[35px] md:text-[45px] font-medium leading-tight">
-                                We deliver your food <br className='md:block hidden' />
+                                We deliver your parcels <br className='md:block hidden' />
                                 all over the city within <br className='md:block hidden' />
                                 <span className="text-primary font-semibold">30 minutes</span>
                             </h1>

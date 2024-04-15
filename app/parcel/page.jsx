@@ -443,7 +443,7 @@ const page = () => {
                                                             className=' space-y-4'
                                                         >
                                                             <div className="md:grid grid-cols-4 gap-x-4">
-                                                                <div>{index}</div>
+                                                                <div>{index + 1}</div>
 
                                                                 <div>
                                                                     {location.from_city.name}
